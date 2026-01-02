@@ -164,3 +164,44 @@ firebase_admin.initialize_app(cred, {
 
 ref_logs = db.reference('sensor_logs') 
 ref_now = db.reference('sensor_now')   
+
+# ==========================================
+# 3. KONFIGURASI MQTT & LOGIKA
+# ==========================================
+MQTT_BROKER = "broker.hivemq.com"
+MQTT_TOPIC = "talha/sensor"
+MQTT_CONTROL_TOPIC = "talha/control"
+
+def on_connect(client, userdata, flags, rc):
+    print(f"✅ Terhubung ke MQTT Broker (Code: {rc})")
+    client.subscribe(MQTT_TOPIC)
+    print("⏳ Menunggu data masuk...")
+
+def on_message(client, userdata, msg):
+    payload = msg.payload.decode()
+    
+    try:
+        data_json = json.loads(payload)
+        
+        # Ambil data sensor
+        suhu = float(data_json.get('suhu', 0))
+        moisture = float(data_json.get('moisture', 0))
+        ph = float(data_json.get('ph', 7))
+        
+        # Default value untuk bau (bisa diambil dari sensor jika ada nanti)
+        val_bau = 0 
+        txt_bau = "Tidak Bau"
+
+        print(f"\n📥 Input: T={suhu}, MC={moisture}, pH={ph}")
+
+        # ============================================================
+        # 4. PIPELINE PREDIKSI ML
+        # ============================================================
+        
+        # --- Prediksi AMMONIA ---
+        input_ammonia = pd.DataFrame([[suhu, moisture, ph]], columns=['Temperature', 'MC(%)', 'pH'])
+        pred_ammonia = model_ammonia.predict(input_ammonia)[0]
+        pred_ammonia = max(0.0, pred_ammonia)
+        pred_ammonia = pred_ammonia / 40.0 # Normalisasi
+        
+        print(f"   └── [ML] Ammonia : {pred_ammonia:.2f} ppm")

@@ -263,3 +263,27 @@ def on_message(client, userdata, msg):
 
     except Exception as e:
         print(f"⚠ Error memproses data: {e}")
+
+# ==========================================
+# 4. LISTENER CONTROL (Actuator Backend)
+# ==========================================
+# global var not strictly needed if we don't cache
+
+def control_listener(event):
+    """
+    Callback jika ada perubahan di Firebase path 'controls'.
+    """
+    print(f"\n🔔 [DEBUG] Firebase Event Detected at path: {event.path}")
+    print(f"   Data: {event.data}")
+    
+    try:
+        # Ambil full state untuk memastikan konsistensi
+        full_state = db.reference('controls').get()
+        if full_state is None: 
+            print("   [DEBUG] State 'controls' kosong / None.")
+            return
+
+        print(f"   [DEBUG] Full Controls State: {full_state}")
+
+        pump = 1 if full_state.get('pump') == 1 else 0
+        aerator = 1 if full_state.get('aerator') == 1 else 0

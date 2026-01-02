@@ -217,3 +217,20 @@ def on_message(client, userdata, msg):
                 print(f"   └── [ML] Maturity: {pred_maturity}")
             except Exception:
                 pass
+
+# ============================================================
+        # 5. PIPELINE FUZZY LOGIC (ENGINE)
+        # ============================================================
+        # Gunakan hasil prediksi ammonia untuk fuzzy
+        mu = hitung_membership(suhu, moisture, ph, pred_ammonia, val_bau)
+        agg = evaluasi_rules(mu, FUZZY_RULES)
+        fuzzy_score = defuzzifikasi(agg)
+        
+        fuzzy_label = "TIDAK TERDEFINISI"
+        if fuzzy_score <= 45: fuzzy_label = "BURUK"
+        elif fuzzy_score <= 75: fuzzy_label = "CUKUP / SEDANG"
+        elif fuzzy_score <= 92: fuzzy_label = "BAIK"
+        else: fuzzy_label = "SANGAT BAIK"
+
+        print(f"   └── [FZ] Score   : {fuzzy_score:.2f} / 100")
+        print(f"   └── [FZ] Label   : {fuzzy_label}")

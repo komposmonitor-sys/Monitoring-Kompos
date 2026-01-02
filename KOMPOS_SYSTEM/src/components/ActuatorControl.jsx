@@ -105,3 +105,108 @@ export default function ActuatorControl({ isDark }) {
                     !isAutoMode && pumpOn && (isDark ? "shadow-blue-500/20 border-blue-500/30" : "shadow-blue-500/20"),
                     isAutoMode && "opacity-60 grayscale-[0.5]"
                 )}>
+                    {isAutoMode && <div className="absolute inset-0 z-20 cursor-not-allowed" title="Switch to Manual Mode to control"></div>}
+
+                    {/* Background Glow */}
+                    {!isAutoMode && pumpOn && (
+                        <div className="absolute inset-0 bg-blue-500/10 blur-xl transition-all duration-500"></div>
+                    )}
+
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className={clsx(
+                                "p-3 rounded-2xl transition-all duration-300",
+                                !isAutoMode && pumpOn ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30" : (isDark ? "bg-slate-800 text-slate-500" : "bg-slate-100 text-slate-400")
+                            )}>
+                                <Droplets size={24} className={clsx(!isAutoMode && pumpOn && "animate-bounce-slow")} />
+                            </div>
+                            <div>
+                                <h3 className={clsx("font-bold text-lg", isDark ? "text-slate-200" : "text-slate-800")}>
+                                    Water Pump
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium tracking-wide">
+                                    {isAutoMode
+                                        ? "ARDUINO CONTROLLED"
+                                        : (pumpOn ? <span className="text-blue-400">ACTIVE - PUMPING</span> : "OFF - STANDBY")
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={togglePump}
+                            disabled={loading || isAutoMode}
+                            className={clsx(
+                                "w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer",
+                                !isAutoMode && pumpOn ? "bg-blue-500" : "bg-slate-600/30",
+                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed"
+                            )}
+                        >
+                            <div className={clsx(
+                                "bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out flex items-center justify-center",
+                                !isAutoMode && pumpOn ? "translate-x-6" : "translate-x-0"
+                            )}>
+                                <Power size={12} className={!isAutoMode && pumpOn ? "text-blue-500" : "text-slate-400"} />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                {/* AERATOR CARD */}
+                <div className={clsx(
+                    "relative overflow-hidden rounded-3xl p-6 border shadow-lg transition-all duration-300 group select-none",
+                    isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200",
+                    !isAutoMode && aeratorOn && (isDark ? "shadow-cyan-500/20 border-cyan-500/30" : "shadow-cyan-500/20"),
+                    isAutoMode && "opacity-60 grayscale-[0.5]"
+                )}>
+                    {isAutoMode && <div className="absolute inset-0 z-20 cursor-not-allowed" title="Switch to Manual Mode to control"></div>}
+
+                    {/* Background Glow */}
+                    {!isAutoMode && aeratorOn && (
+                        <div className="absolute inset-0 bg-cyan-500/10 blur-xl transition-all duration-500"></div>
+                    )}
+
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className={clsx(
+                                "p-3 rounded-2xl transition-all duration-300",
+                                !isAutoMode && aeratorOn ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/30" : (isDark ? "bg-slate-800 text-slate-500" : "bg-slate-100 text-slate-400")
+                            )}>
+                                <Wind size={24} className={clsx(!isAutoMode && aeratorOn && "animate-spin-slow")} />
+                            </div>
+                            <div>
+                                <h3 className={clsx("font-bold text-lg", isDark ? "text-slate-200" : "text-slate-800")}>
+                                    Aerator Fan
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium tracking-wide">
+                                    {isAutoMode
+                                        ? "ARDUINO CONTROLLED"
+                                        : (aeratorOn ? <span className="text-cyan-400">ACTIVE - BLOWING</span> : "OFF - STANDBY")
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={toggleAerator}
+                            disabled={loading || isAutoMode}
+                            className={clsx(
+                                "w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer",
+                                !isAutoMode && aeratorOn ? "bg-cyan-500" : "bg-slate-600/30",
+                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed"
+                            )}
+                        >
+                            <div className={clsx(
+                                "bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out flex items-center justify-center",
+                                !isAutoMode && aeratorOn ? "translate-x-6" : "translate-x-0"
+                            )}>
+                                <Power size={12} className={!isAutoMode && aeratorOn ? "text-cyan-500" : "text-slate-400"} />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+

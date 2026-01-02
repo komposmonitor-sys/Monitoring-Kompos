@@ -51,4 +51,31 @@ def hitung_membership(suhu, moisture, ph, ammonia, bau_val):
     mu['bau_menyengat'] = trapmf(bau_val, [6, 8, 10, 10])
 
     return mu
-    
+
+def evaluasi_rules(mu, rules_json):
+    """Inference Engine berdasarkan JSON"""
+    aggregated = {'buruk': 0.0, 'sedang': 0.0, 'baik': 0.0, 'sangat_baik': 0.0}
+
+    # 1. Safety Override
+    bad_factor = max(mu['ammo_tinggi'], mu['bau_menyengat'])
+    if bad_factor > 0:
+        aggregated['buruk'] = bad_factor
+
+    # 2. Iterasi Rules
+    for rule in rules_json:
+        c_ph = "ph_" + rule['if']['ph'].lower()
+        c_suhu = "suhu_" + rule['if']['suhu'].lower()
+        c_mois = "kelembapan_" + rule['if']['kelembapan'].lower()
+        
+        target = rule['then'].lower().replace(" ", "_")
+
+        val_ph = mu.get(c_ph, 0)
+        val_suhu = mu.get(c_suhu, 0)
+        val_mois = mu.get(c_mois, 0)
+        
+        strength = min(val_ph, val_suhu, val_mois)
+
+        if target in aggregated:
+            aggregated[target] = max(aggregated[target], strength)
+
+    return aggregated

@@ -79,3 +79,27 @@ def evaluasi_rules(mu, rules_json):
             aggregated[target] = max(aggregated[target], strength)
 
     return aggregated
+
+def defuzzifikasi(aggregated):
+    """Menghitung Crisp Output (Score 0-100)"""
+    numerator = 0.0
+    denominator = 0.0
+    
+    for x in range(101):
+        mu_buruk  = trapmf(x, [0, 0, 30, 50])
+        mu_sedang = trimf(x, [40, 60, 80])
+        mu_baik   = trimf(x, [70, 85, 95])
+        mu_sb     = trapmf(x, [90, 95, 100, 100])
+        
+        res_buruk  = min(aggregated['buruk'], mu_buruk)
+        res_sedang = min(aggregated['sedang'], mu_sedang)
+        res_baik   = min(aggregated['baik'], mu_baik)
+        res_sb     = min(aggregated['sangat_baik'], mu_sb)
+        
+        final_mu = max(res_buruk, res_sedang, res_baik, res_sb)
+        
+        numerator += x * final_mu
+        denominator += final_mu
+
+    if denominator == 0: return 0
+    return numerator / denominator

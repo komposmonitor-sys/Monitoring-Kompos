@@ -160,5 +160,78 @@ export default function ExpertSystem({ isDark }) {
                         </button>
                     </form>
                 </div>
-                
+
+                {/* RESULT CARD */}
+                <div className={clsx(
+                    "rounded-3xl p-8 shadow-xl border transition-all relative overflow-hidden min-h-[400px] flex flex-col items-center justify-center text-center",
+                    isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200"
+                )}>
+
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+                    {loading && (
+                        <div className="flex flex-col items-center animate-in fade-in duration-300">
+                            <div className="relative w-20 h-20 mb-4">
+                                <div className="absolute inset-0 rounded-full border-4 border-slate-700/20"></div>
+                                <div className="absolute inset-0 rounded-full border-4 border-t-emerald-500 animate-spin"></div>
+                            </div>
+                            <p className="text-slate-400 animate-pulse">Running Fuzzy Inference...</p>
+                        </div>
+                    )}
+
+                    {!loading && !result && (
+                        <div className="flex flex-col items-center opacity-60">
+                            <div className="w-20 h-20 rounded-full bg-slate-500/10 flex items-center justify-center mb-4 text-4xl">
+                                🔮
+                            </div>
+                            <h4 className="text-lg font-medium">Ready to Analyze</h4>
+                            <p className="text-sm opacity-70">
+                                Enter parameters and click Analyze
+                            </p>
+                        </div>
+                    )}
+
+                    {!loading && result && (
+                        <div className="space-y-8 w-full animate-in zoom-in duration-500">
+                            <div>
+                                <h3 className="text-xs font-bold uppercase tracking-widest opacity-50 mb-4">Quality Score</h3>
+                                <div className="relative inline-flex items-center justify-center">
+                                    <svg className="w-48 h-48 transform -rotate-90">
+                                        <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent"
+                                            className={isDark ? "text-slate-800" : "text-slate-100"} />
+                                        <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent"
+                                            strokeDasharray="553" // 2 * PI * 88
+                                            strokeDashoffset={553 - (553 * result.score / 100)}
+                                            strokeLinecap="round"
+                                            className={clsx("transition-all duration-1000 ease-out", resultColor)} />
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className={clsx("text-5xl font-bold", isDark ? "text-white" : "text-slate-800")}>
+                                            {Math.round(result.score)}
+                                        </span>
+                                        <span className="text-sm opacity-50">/ 100</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={clsx(
+                                "rounded-2xl p-6 border",
+                                isDark ? "bg-slate-800/50 border-slate-700/50" : "bg-slate-50 border-slate-200"
+                            )}>
+                                <h4 className={clsx("text-3xl font-bold mb-1", resultColor)}>{result.label}</h4>
+                                <p className="text-sm opacity-60">
+                                    Manual Fuzzy Calculation
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+            </div>
+
+        </div>
+    );
+}
+
 

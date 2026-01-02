@@ -234,3 +234,32 @@ def on_message(client, userdata, msg):
 
         print(f"   └── [FZ] Score   : {fuzzy_score:.2f} / 100")
         print(f"   └── [FZ] Label   : {fuzzy_label}")
+
+# ============================================================
+        # 6. SIMPAN KE FIREBASE
+        # ============================================================
+        data_to_save = {
+            'suhu': suhu,
+            'moisture': moisture,
+            'ph': ph,
+            'ammonia': round(pred_ammonia, 2),
+            
+            # Kita simpan dua versi score agar aman
+            'ml_score': 0, # Placeholder jika ML score dipakai
+            'fuzzy_score': round(fuzzy_score, 2),
+            'fuzzy_label': fuzzy_label, 
+            
+            # Field 'score' utama pakai fuzzy (lebih robust)
+            'score': round(fuzzy_score, 2),
+            
+            'maturity': pred_maturity,
+            'timestamp': int(time.time() * 1000)
+        }
+
+        ref_logs.push(data_to_save)
+        ref_now.set(data_to_save)
+
+        print("💾 Sukses simpan ke Firebase!")
+
+    except Exception as e:
+        print(f"⚠ Error memproses data: {e}")

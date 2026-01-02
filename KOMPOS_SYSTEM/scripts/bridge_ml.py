@@ -103,3 +103,24 @@ def defuzzifikasi(aggregated):
 
     if denominator == 0: return 0
     return numerator / denominator
+
+# ==========================================
+# 1. KONFIGURASI DAN LOAD MODEL
+# ==========================================
+print("⏳ Memuat paket model & konfigurasi...")
+
+# Load Fuzzy Config
+FUZZY_RULES = []
+try:
+    with open('kompos_config.json', 'r') as f:
+        config_data = json.load(f)
+        FUZZY_RULES = config_data['rules']
+    print("✅ Fuzzy config loaded.")
+except Exception as e:
+    print(f"⚠️ Warning: Gagal load kompos_config.json ({e}). Fuzzy logic mungkin tidak akurat.")
+
+# Load ML Models
+model_path = 'prediksi.pkl'
+if not os.path.exists(model_path):
+    print(f"❌ Error: File model '{model_path}' tidak ditemukan!")
+    exit()

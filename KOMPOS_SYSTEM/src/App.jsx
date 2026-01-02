@@ -134,3 +134,120 @@ export default function App() {
       </div>
     );
   }
+
+return (
+    <Layout isDark={isDark}>
+      <Navbar isDark={isDark} toggleTheme={toggleTheme} />
+
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <DashboardHeader
+          lastUpdate={currentData?.timestamp}
+          isDark={isDark}
+        />
+
+        {/* STATS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <StatsCard
+            title="Temperature"
+            value={currentData ? currentData.suhu : 0}
+            unit="°C"
+            icon={Thermometer}
+            color="red"
+            isDark={isDark}
+            delay={1}
+          />
+          <StatsCard
+            title="Humidity"
+            value={currentData ? currentData.moisture : 0}
+            unit="%"
+            icon={Droplets}
+            color="blue"
+            isDark={isDark}
+            delay={2}
+          />
+          <StatsCard
+            title="Soil pH"
+            value={currentData ? parseFloat(currentData.ph).toFixed(1) : 0}
+            unit="pH"
+            icon={FlaskConical}
+            color="green"
+            isDark={isDark}
+            delay={3}
+          />
+          <StatsCard
+            title="Ammonia Level"
+            value={currentData ? currentData.ammonia : 0}
+            unit="ppm"
+            icon={Wind}
+            color="purple"
+            isDark={isDark}
+            delay={4}
+            subValue="AI Prediction"
+          />
+        </div>
+
+        {/* NEW ACTUATOR CONTROL SECTION */}
+        <ActuatorControl isDark={isDark} />
+
+        {/* MAIN ANALYSIS SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Chart takes up 2/3 */}
+          <div className="lg:col-span-2">
+            <ChartSection data={[...historyData].reverse()} isDark={isDark} />
+          </div>
+
+          {/* Score/Status Card takes up 1/3 */}
+          <div className="flex flex-col gap-4">
+            <StatsCard
+              title="Maturity Score"
+              value={currentData ? currentData.score : 0}
+              unit="/ 100"
+              icon={Award}
+              color="amber"
+              isDark={isDark}
+              delay={5}
+              subValue="AI Evaluation"
+            />
+            {/* Status Box - Custom Layout since it's unique */}
+            <div className={clsx(
+              "flex-1 rounded-3xl p-6 border shadow-sm flex flex-col justify-center items-center text-center gap-4 transition-all",
+              isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+            )}>
+              <div className="relative">
+                <div className={clsx(
+                  "w-24 h-24 rounded-full flex items-center justify-center text-4xl",
+                  currentData && currentData.maturity.toLowerCase().includes("matang") && !currentData.maturity.toLowerCase().includes("belum")
+                    ? "bg-emerald-500/20 text-emerald-500"
+                    : "bg-slate-500/20 text-slate-500"
+                )}>
+                  {currentData && currentData.maturity.toLowerCase().includes("matang") && !currentData.maturity.toLowerCase().includes("belum") ? "🌿" : "⏳"}
+                </div>
+                <div className="absolute inset-0 rounded-full border-2 border-dashed border-current opacity-30 animate-spin-slow"></div>
+              </div>
+              <div>
+                <h3 className={clsx("text-lg font-medium", isDark ? "text-slate-400" : "text-slate-500")}>Current Status</h3>
+                <p className={clsx(
+                  "text-2xl font-bold mt-1",
+                  currentData && currentData.maturity.toLowerCase().includes("matang") && !currentData.maturity.toLowerCase().includes("belum")
+                    ? "text-emerald-500"
+                    : "text-slate-500"
+                )}>
+                  {currentData ? currentData.maturity : "Analyzing..."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* HISTORY TABLE */}
+        <HistoryTable data={historyData} isDark={isDark} />
+
+        {/* EXPERT SYSTEM - Embedded */}
+        <div className="mt-8 border-t border-dashed border-slate-700/50 pt-8">
+          <ExpertSystem isDark={isDark} />
+        </div>
+
+      </main>
+    </Layout >
+  );
+}

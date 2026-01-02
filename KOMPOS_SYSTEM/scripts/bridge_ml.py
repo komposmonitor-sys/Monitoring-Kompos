@@ -205,3 +205,15 @@ def on_message(client, userdata, msg):
         pred_ammonia = pred_ammonia / 40.0 # Normalisasi
         
         print(f"   └── [ML] Ammonia : {pred_ammonia:.2f} ppm")
+
+        # --- Prediksi MATURITY ---
+        pred_maturity = "Unknown"
+        if model_maturity:
+            try:
+                input_maturity = pd.DataFrame([[suhu, moisture, ph, pred_ammonia]], 
+                                              columns=['Temperature', 'MC(%)', 'pH', 'Ammonia(mg/kg)'])
+                maturity_res = model_maturity.predict(input_maturity)[0]
+                pred_maturity = "Matang" if maturity_res == 1 else "Belum Matang"
+                print(f"   └── [ML] Maturity: {pred_maturity}")
+            except Exception:
+                pass

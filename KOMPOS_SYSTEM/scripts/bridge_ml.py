@@ -139,3 +139,28 @@ try:
         if 'rf_classifier_maturity' in loaded_object: model_maturity = loaded_object['rf_classifier_maturity']
     else:
         model_ammonia = loaded_object
+
+    if model_ammonia is None:
+        print("❌ CRITICAL: Model Ammonia tidak ditemukan!")
+        exit()
+    print("🚀 ML Models Siap.")
+
+except Exception as e:
+    print(f"❌ Gagal memuat model: {e}")
+    exit()
+
+# ==========================================
+# 2. KONFIGURASI FIREBASE
+# ==========================================
+cred_path = 'komposproject-dfe5e-firebase-adminsdk-fbsvc-235f1caa0c.json'
+if not os.path.exists(cred_path):
+    print(f"❌ Error: File credential '{cred_path}' tidak ditemukan!")
+    exit()
+
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://komposproject-dfe5e-default-rtdb.asia-southeast1.firebasedatabase.app'
+})
+
+ref_logs = db.reference('sensor_logs') 
+ref_now = db.reference('sensor_now')   

@@ -1,0 +1,19 @@
+{
+  "project_name": "Smart Compost Monitoring",
+  "description": "Full Fuzzy Rule Base (27 Rules) untuk cakupan logika 100%",
+  "default_data": {
+    "suhu": 0,
+    "moisture": 0,
+    "ph": 0,
+    "ammonia": 0
+  },
+  "variables": {
+    "inputs": {
+      "suhu": ["Dingin", "Ideal", "Panas"],
+      "ph": ["Asam", "Netral", "Basa"],
+      "kelembapan": ["Kering", "Sedang", "Basah"]
+    },
+    "outputs": {
+      "status_kompos": ["Buruk", "Sedang", "Baik", "Sangat Baik"]
+    }
+  },

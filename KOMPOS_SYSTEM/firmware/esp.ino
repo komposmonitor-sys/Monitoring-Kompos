@@ -98,3 +98,46 @@ void reconnect() {
     }
   }
 }
+
+int readAnalogAvg(int pin, int samples = 10) {
+  long sum = 0;
+  for (int i = 0; i < samples; i++) { sum += analogRead(pin); delay(5); }
+  return sum / samples;
+}
+
+float bacaPH() {
+  long sum = 0;
+  for (int i = 0; i < 20; i++) { sum += analogRead(PH_ADC); delay(5); }
+  float adc = sum / 20.0;
+  float ph = (a * adc) + b + phOffset;
+  return constrain(ph, 5.5, 9.0);
+}
+
+// ==========================================
+// 6. SETUP
+// ==========================================
+void setup() {
+  Serial.begin(115200);
+  
+  // Tunggu Serial siap (penting untuk beberapa jenis ESP32)
+  while(!Serial) { ; }
+  Serial.println("--- SISTEM MONITORING KOMPOS DIMULAI ---");
+
+  analogReadResolution(12);
+  analogSetAttenuation(ADC_11db);
+
+  pinMode(MOISTURE_PIN, INPUT);
+  pinMode(PH_ADC, INPUT);
+  pinMode(DMS_EN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(RELAY_POMPA, OUTPUT);
+  pinMode(RELAY_AERATOR, OUTPUT);
+
+  digitalWrite(RELAY_POMPA, HIGH); 
+  digitalWrite(RELAY_AERATOR, HIGH); 
+
+  ds18b20.begin();
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}

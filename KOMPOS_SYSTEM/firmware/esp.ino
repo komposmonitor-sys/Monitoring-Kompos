@@ -141,3 +141,71 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 }
+
+void loop() {
+  if (!client.connected()) reconnect();
+  client.loop();
+
+  if (millis() - lastSend > 3000) {
+    lastSend = millis();
+
+    // --- BACA SENSOR ---
+    ds18b20.requestTemperatures();
+    float suhu = ds18b20.getTempCByIndex(0);
+    int moistureRaw = readAnalogAvg(MOISTURE_PIN);
+    int moisturePct = constrain(map(moistureRaw, wetVal, dryVal, 100, 0) + moistureOffset, 0, 100);
+    float ph = bacaPH();
+
+    // --- LOGIKA OTOMATIS ---
+    if (!manualMode) {
+      // Pompa (IN1)
+      if (moisturePct < 43 && !isPumpActive) {
+        digitalWrite(RELAY_POMPA, LOW); 
+        isPumpActive = true;
+        pumpStartTime = millis();
+      }
+      if (isPumpActive) {
+        if (moisturePct > 55 || (millis() - pumpStartTime >= 5000)) {
+          digitalWrite(RELAY_POMPA, HIGH);
+          isPumpActive = false;
+        }
+      }
+
+      // Aerator (IN2)
+      if (suhu > 50.0 && moisturePct > 57) digitalWrite(RELAY_AERATOR, LOW);
+      else if (suhu < 45.0) digitalWrite(RELAY_AERATOR, HIGH);
+    }
+
+    // --- BUZZER SAFETY ---
+    if (suhu > 65.0 || (suhu < 20.0 && millis() > 86400000)) {
+      digitalWrite(BUZZER_PIN, HIGH); delay(100); digitalWrite(BUZZER_PIN, LOW);
+    }
+
+    // --- MONITORING SERIAL (INI YANG ANDA BUTUHKAN) ---
+    Serial.println("\n======================================");
+    Serial.print("MODE SISTEM  : "); Serial.println(manualMode ? "MANUAL (REMOTE)" : "OTOMATIS");
+    Serial.print("Suhu Tanah   : "); Serial.print(suhu); Serial.println(" *C");
+    Serial.print("Kelembaban   : "); Serial.print(moisturePct); Serial.println(" %");
+    Serial.print("pH Tanah     : "); Serial.println(ph, 2);
+    
+    // Status IN1 (Pompa)
+    Serial.print("STATUS IN1   : "); 
+    if (digitalRead(RELAY_POMPA) == LOW) Serial.println("NYALA (ON)");
+    else Serial.println("MATI (OFF)");
+
+    // Status IN2 (Aerator)
+    Serial.print("STATUS IN2   : "); 
+    if (digitalRead(RELAY_AERATOR) == LOW) Serial.println("NYALA (ON)");
+    else Serial.println("MATI (OFF)");
+    Serial.println("======================================");
+
+    // --- MQTT PUBLISH ---
+    String payload = "{\"suhu\":" + String(suhu) + 
+                     ",\"moisture\":" + String(moisturePct) + 
+                     ",\"ph\":" + String(ph, 2) + 
+                     ",\"in1\":" + String(digitalRead(RELAY_POMPA) == LOW ? 1 : 0) +
+                     ",\"in2\":" + String(digitalRead(RELAY_AERATOR) == LOW ? 1 : 0) +
+                     ",\"mode\":\"" + (manualMode ? "manual" : "auto") + "\"}";
+    client.publish(mqtt_topic, payload.c_str());
+  }
+}

@@ -76,4 +76,89 @@ export default function ExpertSystem({ isDark }) {
                     "rounded-3xl p-8 shadow-xl border transition-all relative",
                     isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200"
                 )}>
-                  
+                    <h3 className={clsx("flex items-center gap-2 text-xl font-bold mb-6", isDark ? "text-emerald-400" : "text-emerald-600")}>
+                        <Sliders className="w-5 h-5" />
+                        Input Parameter
+                    </h3>
+
+                    <form onSubmit={handleAnalyze} className="space-y-6">
+                        {/* Suhu */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium block">Temperature (°C)</label>
+                            <input
+                                type="number"
+                                min="0" max="100" step="any" // Changed to 'any' for decimals
+                                value={inputs.suhu}
+                                onChange={(e) => handleInput('suhu', e.target.value)}
+                                className={clsx(
+                                    "w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all cursor-pointer hover:bg-slate-50/5",
+                                    isDark ? "bg-slate-800 border-slate-700 text-white placeholder-slate-500" : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400"
+                                )}
+                                placeholder="Enter Temperature..."
+                            />
+                        </div>
+
+                        {/* Kelembapan */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium block">Moisture (%)</label>
+                            <input
+                                type="number"
+                                min="0" max="100" step="any" // Changed to 'any'
+                                value={inputs.kelembapan}
+                                onChange={(e) => handleInput('kelembapan', e.target.value)}
+                                className={clsx(
+                                    "w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all cursor-pointer hover:bg-slate-50/5",
+                                    isDark ? "bg-slate-800 border-slate-700 text-white placeholder-slate-500" : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400"
+                                )}
+                                placeholder="Enter Moisture..."
+                            />
+                        </div>
+
+                        {/* pH */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium block">Acidity (pH)</label>
+                            <input
+                                type="number"
+                                min="0" max="14" step="any" // Changed to 'any'
+                                value={inputs.ph}
+                                onChange={(e) => handleInput('ph', e.target.value)}
+                                className={clsx(
+                                    "w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all cursor-pointer hover:bg-slate-50/5",
+                                    isDark ? "bg-slate-800 border-slate-700 text-white placeholder-slate-500" : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400"
+                                )}
+                                placeholder="Enter pH Level..."
+                            />
+                        </div>
+
+                        {/* Ammonia Removed */}
+
+                        {/* Bau */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium flex items-center gap-2">
+                                <Wind size={16} />
+                                Smell Condition (Bau)
+                            </label>
+                            <select
+                                value={inputs.bau}
+                                onChange={(e) => handleInput('bau', e.target.value)}
+                                className={clsx(
+                                    "w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all appearance-none cursor-pointer hover:bg-slate-50/5",
+                                    isDark ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-900"
+                                )}
+                            >
+                                <option value="1.5">1. Tidak Bau (Aroma Tanah)</option>
+                                <option value="5.0">2. Cukup Bau (Agak Menyengat)</option>
+                                <option value="9.0">3. Bau Busuk (Menyengat)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                            disabled={loading}
+                            className="w-full py-3 px-6 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                            <Sparkles className="w-5 h-5" />
+                            {loading ? "Calculating..." : "Analyze Quality"}
+                        </button>
+                    </form>
+                </div>
+                
+

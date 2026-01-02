@@ -68,3 +68,33 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 }
+
+/ ==========================================
+// 5. FUNGSI PENDUKUNG
+// ==========================================
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Menghubungkan ke "); Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi Terhubung!");
+}
+
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Mencoba koneksi MQTT...");
+    String cid = "ESP32-Talha-";
+    cid += String(random(0xffff), HEX);
+    if (client.connect(cid.c_str())) {
+      Serial.println("Terhubung!");
+      client.subscribe(mqtt_control);
+    } else {
+      Serial.print("Gagal, rc="); Serial.print(client.state());
+      delay(5000);
+    }
+  }
+}

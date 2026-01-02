@@ -82,6 +82,28 @@ export default function ChartSection({ data, isDark }) {
                             cursor={{ stroke: isDark ? '#475569' : '#cbd5e1', strokeWidth: 1 }}
                         />
                         <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+
+                        <Line
+                            yAxisId="left" type="monotone" dataKey="suhu" name="Temperature (°C)"
+                            stroke="#ef4444" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeOpacity={0.8}
+                        />
+                        <Line
+                            yAxisId="left" type="monotone" dataKey="moisture" name="Moisture (%)"
+                            stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeOpacity={0.8}
+                        />
+                        <Line
+                            yAxisId="left" type="monotone" dataKey="ph" name="pH Level"
+                            stroke="#22c55e" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeOpacity={0.8}
+                        />
+
+                        <Line
+                            yAxisId="right" type="monotone" dataKey="ammonia" name="Ammonia (ppm)"
+                            stroke="#a855f7" strokeWidth={3} dot={false} activeDot={{ r: 6, strokeWidth: 0 }}
+                            strokeDasharray="4 4"
+                        />
                     </LineChart>
                 </ResponsiveContainer>
             </div>

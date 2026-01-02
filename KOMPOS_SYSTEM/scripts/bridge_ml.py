@@ -124,3 +124,18 @@ model_path = 'prediksi.pkl'
 if not os.path.exists(model_path):
     print(f"❌ Error: File model '{model_path}' tidak ditemukan!")
     exit()
+
+model_ammonia = None
+model_score = None
+model_maturity = None
+
+try:
+    loaded_object = joblib.load(model_path)
+    if isinstance(loaded_object, dict):
+        if 'rf_regressor_ammonia' in loaded_object: model_ammonia = loaded_object['rf_regressor_ammonia']
+        elif 'lgbm_ammonia' in loaded_object: model_ammonia = loaded_object['lgbm_ammonia']
+        
+        if 'rf_regressor_score' in loaded_object: model_score = loaded_object['rf_regressor_score']
+        if 'rf_classifier_maturity' in loaded_object: model_maturity = loaded_object['rf_classifier_maturity']
+    else:
+        model_ammonia = loaded_object

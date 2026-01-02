@@ -287,3 +287,35 @@ def control_listener(event):
 
         pump = 1 if full_state.get('pump') == 1 else 0
         aerator = 1 if full_state.get('aerator') == 1 else 0
+
+        # Payload JSON ke ESP32 (FORCE MANUAL)
+        payload = json.dumps({
+            "pump": pump,
+            "aerator": aerator,
+            "auto": 0 
+        })
+        
+        print(f"📤 [CONTROL] Mengirim ke MQTT ({MQTT_CONTROL_TOPIC}): {payload}")
+        client.publish(MQTT_CONTROL_TOPIC, payload)
+
+    except Exception as e:
+        print(f"⚠️ Error di control_listener: {e}")
+
+# ==========================================
+# 5. MAIN EXECUTION
+# ==========================================
+print("🎧 Mendengarkan perintah Actuator dari Firebase...")
+try:
+    # Memasang listener pada background thread
+    db.reference('controls').listen(control_listener)
+except Exception as e:
+    print(f"⚠️ Gagal memasang listener Firebase: {e}")
+
+# Setup MQTT Client
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+print("Mencoba menghubungkan ke MQTT...")
+client.connect(MQTT_BROKER, 1883, 60)
+client.loop_forever()

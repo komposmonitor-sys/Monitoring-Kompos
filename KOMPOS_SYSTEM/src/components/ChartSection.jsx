@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
 export default function ChartSection({ data, isDark }) {
-    if (!data || data.length === 0) return null;
+    // if (!data || data.length === 0) return null; // Always render container
 
     return (
         <motion.div

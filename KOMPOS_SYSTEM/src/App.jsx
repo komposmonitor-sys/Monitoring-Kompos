@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, query, limitToLast, onValue } from 'firebase/database';
 import { Thermometer, Droplets, FlaskConical, Wind, Award, Info } from 'lucide-react';
+import { motion } from 'framer-motion'; // Added motion
 import Layout from './components/Layout';
 import Navbar from './components/Navbar';
 import DashboardHeader from './components/DashboardHeader';
@@ -37,6 +38,22 @@ try {
 } catch (error) {
   console.error("Firebase Init Error:", error);
 }
+
+// Animation Variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
 
 // ==========================================
 // 3. MAIN COMPONENT
@@ -135,18 +152,25 @@ export default function App() {
     );
   }
 
-return (
+  return (
     <Layout isDark={isDark}>
       <Navbar isDark={isDark} toggleTheme={toggleTheme} />
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <DashboardHeader
-          lastUpdate={currentData?.timestamp}
-          isDark={isDark}
-        />
+      <motion.main
+        className="container mx-auto px-4 py-8 max-w-7xl"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div variants={itemVariants}>
+          <DashboardHeader
+            lastUpdate={currentData?.timestamp}
+            isDark={isDark}
+          />
+        </motion.div>
 
         {/* STATS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatsCard
             title="Temperature"
             value={currentData ? currentData.suhu : 0}
@@ -184,13 +208,15 @@ return (
             delay={4}
             subValue="AI Prediction"
           />
-        </div>
+        </motion.div>
 
         {/* NEW ACTUATOR CONTROL SECTION */}
-        <ActuatorControl isDark={isDark} />
+        <motion.div variants={itemVariants}>
+          <ActuatorControl isDark={isDark} />
+        </motion.div>
 
         {/* MAIN ANALYSIS SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Chart takes up 2/3 */}
           <div className="lg:col-span-2">
             <ChartSection data={[...historyData].reverse()} isDark={isDark} />
@@ -237,17 +263,19 @@ return (
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* HISTORY TABLE */}
-        <HistoryTable data={historyData} isDark={isDark} />
+        <motion.div variants={itemVariants}>
+          <HistoryTable data={historyData} isDark={isDark} />
+        </motion.div>
 
         {/* EXPERT SYSTEM - Embedded */}
-        <div className="mt-8 border-t border-dashed border-slate-700/50 pt-8">
+        <motion.div variants={itemVariants} className="mt-8 border-t border-dashed border-slate-700/50 pt-8">
           <ExpertSystem isDark={isDark} />
-        </div>
+        </motion.div>
 
-      </main>
+      </motion.main>
     </Layout >
   );
 }

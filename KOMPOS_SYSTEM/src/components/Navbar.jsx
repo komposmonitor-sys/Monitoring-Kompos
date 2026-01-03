@@ -39,7 +39,7 @@ export default function Navbar({ isDark, toggleTheme }) {
                     <button
                         onClick={toggleTheme}
                         className={clsx(
-                            "p-2 rounded-xl border transition-all hover:scale-105 active:scale-95",
+                            "p-2 rounded-xl border transition-all hover:scale-110 active:scale-95 cursor-pointer hover:rotate-12",
                             isDark ? "bg-slate-800 border-slate-700 hover:bg-slate-700 hover:text-emerald-400" : "bg-slate-100 border-slate-200 hover:bg-slate-50 hover:text-emerald-600"
                         )}
                         aria-label="Toggle Theme"

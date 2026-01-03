@@ -78,7 +78,7 @@ export default function ActuatorControl({ isDark }) {
                 <button
                     onClick={toggleMode}
                     className={clsx(
-                        "flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md active:scale-95",
+                        "flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 cursor-pointer",
                         isAutoMode
                             ? (isDark ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-emerald-50 border-emerald-200 text-emerald-700")
                             : (isDark ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-amber-50 border-amber-200 text-amber-700")
@@ -137,9 +137,9 @@ export default function ActuatorControl({ isDark }) {
                             onClick={togglePump}
                             disabled={loading || isAutoMode}
                             className={clsx(
-                                "w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer",
+                                "w-14 h-8 rounded-full p-1 transition-all duration-300 ease-in-out cursor-pointer hover:scale-105",
                                 !isAutoMode && pumpOn ? "bg-blue-500" : "bg-slate-600/30",
-                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed"
+                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed hover:scale-100"
                             )}
                         >
                             <div className={clsx(
@@ -191,9 +191,9 @@ export default function ActuatorControl({ isDark }) {
                             onClick={toggleAerator}
                             disabled={loading || isAutoMode}
                             className={clsx(
-                                "w-14 h-8 rounded-full p-1 transition-colors duration-300 ease-in-out cursor-pointer",
+                                "w-14 h-8 rounded-full p-1 transition-all duration-300 ease-in-out cursor-pointer hover:scale-105",
                                 !isAutoMode && aeratorOn ? "bg-cyan-500" : "bg-slate-600/30",
-                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed"
+                                (loading || isAutoMode) && "opacity-50 cursor-not-allowed hover:scale-100"
                             )}
                         >
                             <div className={clsx(
@@ -209,4 +209,3 @@ export default function ActuatorControl({ isDark }) {
         </div>
     );
 }
-

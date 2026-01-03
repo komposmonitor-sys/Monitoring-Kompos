@@ -118,7 +118,7 @@ export default function ActuatorControl({ isDark }) {
                                 "p-3 rounded-2xl transition-all duration-300",
                                 !isAutoMode && pumpOn ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30" : (isDark ? "bg-slate-800 text-slate-500" : "bg-slate-100 text-slate-400")
                             )}>
-                                <Droplets size={24} className={clsx(!isAutoMode && pumpOn && "animate-bounce-slow")} />
+                                <Droplets size={24} className={clsx(!isAutoMode && pumpOn && "animate-swing")} />
                             </div>
                             <div>
                                 <h3 className={clsx("font-bold text-lg", isDark ? "text-slate-200" : "text-slate-800")}>

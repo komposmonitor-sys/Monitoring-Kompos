@@ -101,6 +101,7 @@ export default function App() {
 
         const finalData = rawData.map(item => ({
           ...item,
+          rawTimestamp: item.timestamp, // Keep raw for logic
           timestamp: item.timestamp ? new Date(item.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'medium' }) : "Just now",
           ammonia: item.ammonia !== undefined ? item.ammonia : 0,
           score: item.score !== undefined ? item.score : 0,
@@ -123,6 +124,11 @@ export default function App() {
 
     return () => unsubscribe();
   }, []);
+
+  // Calculate Online Status (Threshold: 60 seconds)
+  const isOnline = currentData && currentData.rawTimestamp
+    ? (Date.now() - currentData.rawTimestamp < 60000)
+    : false;
 
   // Loading State
   if (loading) {
@@ -154,7 +160,7 @@ export default function App() {
 
   return (
     <Layout isDark={isDark}>
-      <Navbar isDark={isDark} toggleTheme={toggleTheme} />
+      <Navbar isDark={isDark} toggleTheme={toggleTheme} isOnline={isOnline} />
 
       <motion.main
         className="container mx-auto px-4 py-8 max-w-7xl"

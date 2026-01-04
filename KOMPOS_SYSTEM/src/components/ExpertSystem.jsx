@@ -34,7 +34,7 @@ export default function ExpertSystem({ isDark }) {
                 inputs.ph,
                 inputs.bau // Input ke-4 (Bau/Ammonia)
             );
-
+            
             setResult(res);
             setLoading(false);
         }, 800);
@@ -45,7 +45,7 @@ export default function ExpertSystem({ isDark }) {
         if (!label) return "text-slate-500";
         if (label.includes('BURUK')) return "text-red-500";
         if (label.includes('SEDANG')) return "text-amber-500";
-        if (label.includes('SANGAT BAIK')) return "text-emerald-500";
+        if (label.includes('SANGAT BAIK')) return "text-emerald-500"; 
         return "text-emerald-400"; // BAIK
     };
 
@@ -70,11 +70,11 @@ export default function ExpertSystem({ isDark }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
                 {/* --- INPUT FORM --- */}
                 <div className={clsx(
-                    "rounded-3xl p-8 shadow-xl border transition-all relative flex flex-col h-full",
+                    "rounded-3xl p-8 shadow-xl border transition-all relative",
                     isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200"
                 )}>
                     <h3 className={clsx("flex items-center gap-2 text-xl font-bold mb-6", isDark ? "text-emerald-400" : "text-emerald-600")}>
@@ -151,7 +151,7 @@ export default function ExpertSystem({ isDark }) {
 
                         <button type="submit"
                             disabled={loading}
-                            className="w-full py-3 px-6 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transform hover:scale-105 hover:shadow-emerald-500/40 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer">
+                            className="w-full py-3 px-6 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50">
                             <Sparkles className="w-5 h-5" />
                             {loading ? "Menghitung..." : "Analisis Kualitas"}
                         </button>
@@ -160,7 +160,7 @@ export default function ExpertSystem({ isDark }) {
 
                 {/* --- RESULT CARD --- */}
                 <div className={clsx(
-                    "rounded-3xl p-8 shadow-xl border transition-all relative overflow-hidden h-full flex flex-col items-center justify-center text-center",
+                    "rounded-3xl p-8 shadow-xl border transition-all relative overflow-hidden min-h-[400px] flex flex-col items-center justify-center text-center",
                     isDark ? "bg-slate-900/50 border-slate-800" : "bg-white border-slate-200"
                 )}>
                     {/* Background Glow */}

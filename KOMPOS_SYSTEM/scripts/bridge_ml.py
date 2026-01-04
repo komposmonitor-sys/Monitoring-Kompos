@@ -223,12 +223,21 @@ def on_message(client, userdata, msg):
     try:
         data_json = json.loads(payload)
         
-        # 1. Parse Data Sensor
-        suhu = float(data_json.get('suhu', 0))
-        moisture = float(data_json.get('moisture', 0))
-        ph = float(data_json.get('ph', 7))
+        # --- INPUT VALIDATION (Disesuaikan dengan Batas Fuzzy) ---
+        raw_suhu = float(data_json.get('suhu', 0))
+        raw_mois = float(data_json.get('moisture', 0))
+        raw_ph   = float(data_json.get('ph', 7))
+
+        # Batasi nilai (Clamping)
+        # PERUBAHAN: Max suhu diubah jadi 80.0 sesuai request
+        suhu     = clamp(raw_suhu, 0.0, 80.0)       
+        
+        moisture = clamp(raw_mois, 0.0, 100.0)      
+        ph       = clamp(raw_ph, 0.0, 14.0)         
         
         print(f"\n📥 [DATA MASUK] T={suhu}°C | M={moisture}% | pH={ph}")
+        
+        # ... (lanjutkan kode ke bawah) ...
 
         # 2. ML Prediction (Ammonia)
         pred_ammonia = 0.0
